@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Local Cultural Heritage Archive - Punjab</title>
+
+  <!-- ===================================================================
+       ALL CSS IS IN THIS ONE <style> BLOCK. NO JAVASCRIPT ANYWHERE.
+       ================================================================= -->
+  <style>
+    /* ---------- 1. COLOURS (change a colour here, it changes everywhere) ---------- */
+    :root {
+      --cream: #FBF5E6;
+      --beige: #EADCC0;
+      --brown: #3E2A1E;
+      --maroon: #7B1E2B;
+      --green: #2F5233;
+      --gold: #B8923A;
+    }
+
+    /* ---------- 2. BASIC RESET AND PAGE SETTINGS ---------- */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }   /* smooth scrolling with CSS only */
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--cream);
+      color: var(--brown);
+      line-height: 1.7;
+    }
+
+    h1, h2, h3 { font-family: Georgia, "Times New Roman", serif; color: var(--maroon); line-height: 1.25; }
+    h2 { font-size: 2rem; margin-bottom: 10px; }
+    h3 { font-size: 1.25rem; margin-bottom: 6px; }
+    p  { margin-bottom: 12px; }
+    a  { color: var(--maroon); }
+
+    /* ---------- 3. NAVIGATION BAR (stays at the top while scrolling) ---------- */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: var(--brown);
+      border-bottom: 4px solid var(--gold);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      padding: 10px 30px;
+    }
+    .logo { display: flex; align-items: center; gap: 10px; color: var(--cream); text-decoration: none;
+            font-family: Georgia, serif; font-size: 1.2rem; }
+    .logo img { width: 40px; height: 40px; border-radius: 50%; background: var(--gold); }
+    .nav-links { list-style: none; display: flex; flex-wrap: wrap; gap: 6px; }
+    .nav-links a {
+      display: block; padding: 8px 14px; color: var(--cream); text-decoration: none;
+      border-radius: 20px; transition: background 0.3s;
+    }
+    .nav-links a:hover { background: var(--maroon); }
+
+    /* ---------- 4. HERO SECTION ---------- */
+    .hero {
+      /* If images/hero.jpg is missing, the brown-to-maroon gradient shows instead */
+      background: linear-gradient(rgba(62,42,30,0.65), rgba(123,30,43,0.65)),
+                  url("images/hero.jpg") center / cover no-repeat,
+                  linear-gradient(var(--brown), var(--maroon));
+      color: var(--cream);
+      text-align: center;
+      padding: 110px 20px;
+    }
+    .hero h1 { color: var(--cream); font-size: 3rem; margin-bottom: 15px; }
+    .hero p  { max-width: 700px; margin: 0 auto 25px; font-size: 1.15rem; }
+
+    /* ---------- 5. BUTTONS ---------- */
+    .btn {
+      display: inline-block; background: var(--gold); color: var(--brown); font-weight: bold;
+      padding: 12px 26px; border-radius: 30px; text-decoration: none; margin: 5px;
+      transition: transform 0.3s, background 0.3s, color 0.3s;
+    }
+    .btn:hover { background: var(--cream); transform: translateY(-3px); }
+    .btn-dark { background: var(--maroon); color: var(--cream); }
+    .btn-dark:hover { background: var(--green); color: var(--cream); }
+
+    /* ---------- 6. SECTIONS ---------- */
+    section { padding: 70px 30px; scroll-margin-top: 70px; }  /* margin so sticky bar doesn't cover headings */
+    .alt { background: var(--beige); }                          /* alternate beige background */
+    .container { max-width: 1100px; margin: 0 auto; }
+    .section-intro { max-width: 750px; margin-bottom: 30px; }
+    .section-title { border-left: 6px solid var(--gold); padding-left: 14px; margin-bottom: 20px; }
+
+    /* Category links inside a section (jump links) */
+    .category-nav { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 30px; }
+    .category-nav a {
+      background: var(--green); color: var(--cream); text-decoration: none;
+      padding: 8px 18px; border-radius: 20px; transition: background 0.3s;
+    }
+    .category-nav a:hover { background: var(--maroon); }
+
+    /* ---------- 7. CARDS (CSS Grid) ---------- */
+    .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; }
+
+    .card {
+      background: var(--cream);
+      border: 1px solid var(--gold);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 3px 10px rgba(62,42,30,0.15);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .alt .card { background: #fff; }
+    .card:hover { transform: translateY(-6px); box-shadow: 0 10px 22px rgba(62,42,30,0.3); }
+    .card img { width: 100%; height: 190px; object-fit: cover; display: block; background: var(--beige); }
+    .card-body { padding: 18px; }
+    .tag { display: inline-block; background: var(--green); color: var(--cream); font-size: 0.8rem;
+           padding: 2px 12px; border-radius: 12px; margin-bottom: 8px; }
+    .small { font-size: 0.9rem; border-top: 1px dashed var(--gold); padding-top: 8px; margin-top: 8px; }
+
+    /* ---------- 8. TWO-COLUMN LAYOUT (Flexbox) ---------- */
+    .two-col { display: flex; gap: 35px; align-items: center; }
+    .two-col > div { flex: 1; }
+    .two-col img { width: 100%; border-radius: 12px; border: 4px solid var(--gold); background: var(--beige); min-height: 200px; }
+
+    /* ---------- 9. IMAGE GALLERY (CSS Grid + hover zoom) ---------- */
+    .gallery { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 30px; }
+    .gallery div { overflow: hidden; border-radius: 10px; border: 2px solid var(--gold); background: var(--beige); }
+    .gallery img { width: 100%; height: 160px; object-fit: cover; display: block; transition: transform 0.4s; }
+    .gallery img:hover { transform: scale(1.12); }
+
+    /* ---------- 10. TABLE AND FORM ---------- */
+    table { width: 100%; border-collapse: collapse; background: #fff; margin: 15px 0 25px; }
+    th, td { border: 1px solid var(--gold); padding: 10px 14px; text-align: left; }
+    th { background: var(--maroon); color: var(--cream); }
+
+    form { background: #fff; border: 1px solid var(--gold); border-radius: 12px; padding: 25px; max-width: 650px; }
+    label { display: block; font-weight: bold; margin: 12px 0 4px; }
+    input, select, textarea {
+      width: 100%; padding: 10px; border: 1px solid var(--gold); border-radius: 6px;
+      font-size: 1rem; font-family: inherit; background: var(--cream);
+    }
+    input:focus, select:focus, textarea:focus { outline: 2px solid var(--maroon); }
+    .note { font-size: 0.9rem; background: var(--beige); border-left: 4px solid var(--maroon); padding: 8px 12px; margin-top: 15px; }
+
+    /* ---------- 11. FOOTER ---------- */
+    footer { background: var(--brown); color: var(--beige); padding: 40px 30px 20px; border-top: 5px solid var(--gold); }
+    .footer-grid { max-width: 1100px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 30px; justify-content: space-between; }
+    footer h3 { color: var(--gold); }
+    footer a { color: var(--beige); text-decoration: none; }
+    footer a:hover { color: var(--gold); text-decoration: underline; }
+    footer ul { list-style: none; }
+    .copyright { text-align: center; margin-top: 25px; font-size: 0.9rem; }
+
+    /* ---------- 12. RESPONSIVE DESIGN (media queries) ---------- */
+    /* Tablets */
+    @media (max-width: 900px) {
+      .card-grid { grid-template-columns: repeat(2, 1fr); }
+      .gallery { grid-template-columns: repeat(2, 1fr); }
+      .two-col { flex-direction: column; }
+      .hero h1 { font-size: 2.3rem; }
+    }
+    /* Mobile phones */
+    @media (max-width: 600px) {
+      .navbar { flex-direction: column; padding: 10px; }
+      .nav-links { justify-content: center; }
+      .nav-links a { padding: 6px 10px; font-size: 0.9rem; }
+      .card-grid { grid-template-columns: 1fr; }
+      section { padding: 45px 18px; }
+      .hero { padding: 70px 15px; }
+      .hero h1 { font-size: 1.8rem; }
+      h2 { font-size: 1.6rem; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Anchor target for every "Back to top" link -->
+  <a id="top"></a>
+
+  <!-- ===================== NAVIGATION BAR ===================== -->
+  <header class="navbar">
+    <a href="#home" class="logo"><img src="lpulogo.png" alt="Logo"> Heritage Archive</a>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#heritage">Heritage</a></li>
+        <li><a href="#festivals">Festivals</a></li>
+        <li><a href="#food">Food</a></li>
+        <li><a href="#crafts">Crafts</a></li>
+        <li><a href="#stories">Stories</a></li>
+        <li><a href="#about">About</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+
+    <!-- ===================== HOME ===================== -->
+    <section id="home" style="padding:0;">
+      <div class="hero">
+        <h1>Local Cultural Heritage Archive</h1>
+        <p>A digital home for the history, festivals, food, arts and stories of Punjab, collected so that they can be learned, shared and preserved.</p>
+        <a href="#heritage" class="btn">Explore Heritage</a>
+        <a href="#about" class="btn btn-dark">About the Project</a>
+      </div>
+    </section>
+
+    <section class="alt" id="explore">
+      <div class="container">
+        <h2 class="section-title">Explore Heritage</h2>
+        <p class="section-intro">The archive documents historical places, festivals, food, clothing, arts and crafts, folk music and dance, stories, and customs. Choose a category to begin.</p>
+        <div class="card-grid">
+          <div class="card"><div class="card-body"><h3>Historical Places</h3><p>Gurdwaras, forts, palaces and memorials.</p><a class="btn btn-dark" href="#heritage">Visit</a></div></div>
+          <div class="card"><div class="card-body"><h3>Festivals</h3><p>Baisakhi, Lohri, Gurpurab, Hola Mohalla and more.</p><a class="btn btn-dark" href="#festivals">Visit</a></div></div>
+          <div class="card"><div class="card-body"><h3>Traditional Food</h3><p>From sarson da saag to Amritsari kulcha.</p><a class="btn btn-dark" href="#food">Visit</a></div></div>
+          <div class="card"><div class="card-body"><h3>Arts and Crafts</h3><p>Phulkari, jutti, weaving and woodwork.</p><a class="btn btn-dark" href="#crafts">Visit</a></div></div>
+          <div class="card"><div class="card-body"><h3>Stories and Traditions</h3><p>Folk tales, music, Bhangra and Giddha.</p><a class="btn btn-dark" href="#stories">Visit</a></div></div>
+          <div class="card"><div class="card-body"><h3>About the Project</h3><p>Our aims, vision and team.</p><a class="btn btn-dark" href="#about">Visit</a></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container two-col">
+        <div>
+          <h2>Punjab's Cultural Identity</h2>
+          <p>Punjab, in north-western India, is known for its agriculture, its Sikh heritage, its music and its hospitality. The name is commonly explained as "land of five rivers", from the Persian words for five (<em>panj</em>) and water (<em>aab</em>).</p>
+          <p>Harvest festivals, community kitchens (langar), folk poetry and vibrant dance are all part of everyday life, and they connect the present generation with its past.</p>
+        </div>
+        <div><img src="punjabiculture.jpeg" alt="Punjabi cultural scene"></div>
+      </div>
+    </section>
+
+    <section class="alt">
+      <div class="container">
+        <h2 class="section-title">Popular Heritage Locations</h2>
+        <div class="card-grid">
+          <div class="card"><img src="goldentemple.jpg" alt="Golden Temple, Amritsar"><div class="card-body"><h3>Golden Temple</h3><p>Amritsar's best-known landmark.</p></div></div>
+          <div class="card"><img src="jallianwalabagh.jpg" alt="Jallianwala Bagh, Amritsar"><div class="card-body"><h3>Jallianwala Bagh</h3><p>A memorial to the events of 13 April 1919.</p></div></div>
+          <div class="card"><img src="anandpursahib.jpg" alt="Anandpur Sahib"><div class="card-body"><h3>Anandpur Sahib</h3><p>Birthplace of the Khalsa in 1699.</p></div></div>
+        </div>
+        <p style="margin-top:20px;"><a class="btn btn-dark" href="#heritage">See all locations</a></p>
+      </div>
+    </section>
+
+    <!-- ===================== HISTORICAL HERITAGE ===================== -->
+    <section id="heritage">
+      <div class="container">
+        <h2 class="section-title">Historical Heritage</h2>
+        <p class="section-intro">Important historical places in Punjab, with a short note on why each matters.</p>
+        <div class="card-grid">
+
+          <div class="card"><img src="goldentemple.jpg" alt="Golden Temple"><div class="card-body">
+            <span class="tag">Amritsar</span><h3>Golden Temple (Harmandir Sahib)</h3>
+            <p>The holiest gurdwara of Sikhism, set in the middle of a sacred pool. It was built in the late 16th century under Guru Arjan, and the Guru Granth Sahib was first installed here in 1604.</p>
+            <p class="small"><strong>Significance:</strong> Spiritual centre of Sikhism; its community kitchen serves free meals to all visitors.</p></div></div>
+
+          <div class="card"><img src="jallianwalabagh.jpg" alt="Jallianwala Bagh"><div class="card-body">
+            <span class="tag">Amritsar</span><h3>Jallianwala Bagh</h3>
+            <p>A public garden where, on 13 April 1919 (Baisakhi day), British troops under General Dyer fired on an unarmed gathering.</p>
+            <p class="small"><strong>Significance:</strong> A key event in India's freedom struggle; now a national memorial.</p></div></div>
+
+          <div class="card"><img src="wagahborder.jpg" alt="Attari-Wagah border ceremony"><div class="card-body">
+            <span class="tag">Attari-Wagah</span><h3>Wagah Border</h3>
+            <p>The India-Pakistan border crossing near Amritsar, famous for the daily Beating Retreat ceremony performed by border guards.</p>
+            <p class="small"><strong>Significance:</strong> A symbol of the 1947 Partition and a popular visitor attraction.</p></div></div>
+
+          <div class="card"><img src="anandpursahib.jpg" alt="Takht Sri Kesgarh Sahib"><div class="card-body">
+            <span class="tag">Rupnagar district</span><h3>Anandpur Sahib</h3>
+            <p>A holy city founded by Guru Tegh Bahadur in 1665. On Baisakhi in 1699, Guru Gobind Singh founded the Khalsa here.</p>
+            <p class="small"><strong>Significance:</strong> Home of Takht Sri Kesgarh Sahib and the venue of Hola Mohalla.</p></div></div>
+
+          <div class="card"><img src="qilamubarak.jpg" alt="Qila Mubarak, Bathinda"><div class="card-body">
+            <span class="tag">Bathinda</span><h3>Qila Mubarak</h3>
+            <p>One of the oldest surviving forts in the region, with tall brick walls. It is associated with Razia Sultan, who is said to have been held here in 1240.</p>
+            <p class="small"><strong>Significance:</strong> An ancient fortress that shows early military architecture in Punjab.</p></div></div>
+
+          <div class="card"><img src="sheeshmahal.jpg" alt="Sheesh Mahal, Patiala"><div class="card-body">
+            <span class="tag">Patiala</span><h3>Sheesh Mahal</h3>
+            <p>A 19th-century palace of the Patiala royal family, known for its mirror work and gardens.</p>
+            <p class="small"><strong>Significance:</strong> Reflects the art and lifestyle of the princely state of Patiala.</p></div></div>
+
+          <div class="card"><img src="khalsaheritagecomplex.jpg" alt="Khalsa Heritage Memorial Complex"><div class="card-body">
+            <span class="tag">Anandpur Sahib</span><h3>Virasat-e-Khalsa</h3>
+            <p>A modern museum complex that opened in 2011 to tell the story of Sikh history and Punjabi culture. It was designed by architect Moshe Safdie.</p>
+            <p class="small"><strong>Significance:</strong> A modern attempt to preserve and present Punjab's heritage.</p></div></div>
+        </div>
+
+        <!-- Gallery -->
+        <h3 style="margin-top:40px;">Heritage Gallery</h3>
+        <div class="gallery">
+          <div><img src="gallery1.jpg" alt="Heritage gallery photo 1"></div>
+          <div><img src="gallery2.jpg" alt="Heritage gallery photo 2"></div>
+          <div><img src="gallery3.jpg" alt="Heritage gallery photo 3"></div>
+          <div><img src="gallery4.jpg" alt="Heritage gallery photo 4"></div>
+        </div>
+        <p class="small">Further reading: Archaeological Survey of India (asi.nic.in), SGPC (sgpc.net), Punjab Tourism (punjabtourism.punjab.gov.in), Encyclopaedia Britannica.</p>
+        <p><a href="#top">&uarr; Back to top</a></p>
+      </div>
+    </section>
+
+    <!-- ===================== FESTIVALS ===================== -->
+    <section class="alt" id="festivals">
+      <div class="container">
+        <h2 class="section-title">Festivals</h2>
+        <p class="section-intro">Punjab's festivals follow the seasons, the harvest and the Sikh calendar.</p>
+        <div class="category-nav">
+          <a href="#baisakhi">Baisakhi</a><a href="#lohri">Lohri</a><a href="#gurpurab">Gurpurab</a><a href="#hola">Hola Mohalla</a><a href="#teeyan">Teeyan</a><a href="#maghi">Maghi</a>
+        </div>
+        <div class="card-grid">
+
+          <div class="card" id="baisakhi"><img src="baisakhi.jpg" alt="Baisakhi celebration"><div class="card-body">
+            <span class="tag">April</span><h3>Baisakhi</h3>
+            <p>A spring harvest festival, celebrated around 13-14 April. For Sikhs it also marks the founding of the Khalsa in 1699.</p>
+            <p class="small"><strong>Importance:</strong> Thanksgiving for the wheat harvest; fairs, processions and Bhangra.</p></div></div>
+
+          <div class="card" id="lohri"><img src="lohri.jpg" alt="Lohri bonfire"><div class="card-body">
+            <span class="tag">January</span><h3>Lohri</h3>
+            <p>Celebrated in mid-January with a bonfire. People offer sesame, peanuts, popcorn and rewri into the fire and dance around it.</p>
+            <p class="small"><strong>Importance:</strong> Marks the end of the winter season and the coming of longer days.</p></div></div>
+
+          <div class="card" id="gurpurab"><img src="gurpurav.jpg" alt="Gurpurab procession"><div class="card-body">
+            <span class="tag">Sikh calendar</span><h3>Gurpurab</h3>
+            <p>Gurpurabs commemorate the birth anniversaries and other important days of the Sikh Gurus. Guru Nanak's Gurpurab, in November, is the best known.</p>
+            <p class="small"><strong>Importance:</strong> Prayers, processions (nagar kirtan) and langar for all.</p></div></div>
+
+          <div class="card" id="hola"><img src="hollamohalla.jpg" alt="Hola Mohalla at Anandpur Sahib"><div class="card-body">
+            <span class="tag">March</span><h3>Hola Mohalla</h3>
+            <p>A gathering at Anandpur Sahib held the day after Holi, started by Guru Gobind Singh. It features martial arts, mock battles, horse riding and music.</p>
+            <p class="small"><strong>Importance:</strong> Celebrates courage, discipline and community strength.</p></div></div>
+
+          <div class="card" id="teeyan"><img src="teeyan.jpg" alt="Teeyan festival"><div class="card-body">
+            <span class="tag">Monsoon</span><h3>Teeyan</h3>
+            <p>A women's festival of the rainy season (Sawan), with swings, mehndi, songs and Giddha.</p>
+            <p class="small"><strong>Importance:</strong> Welcomes the monsoon and celebrates friendship among women.</p></div></div>
+
+          <div class="card" id="maghi"><img src="maghi.jpg" alt="Maghi fair at Muktsar"><div class="card-body">
+            <span class="tag">January</span><h3>Maghi</h3>
+            <p>Celebrated on the first day of the month of Magh. A large fair is held at Muktsar in memory of the Forty Liberated Ones (Chali Mukte).</p>
+            <p class="small"><strong>Importance:</strong> Remembers sacrifice in Sikh history.</p></div></div>
+        </div>
+        <p style="margin-top:20px;"><a href="#top">&uarr; Back to top</a></p>
+      </div>
+    </section>
+
+    <!-- ===================== TRADITIONAL FOOD ===================== -->
+    <section id="food">
+      <div class="container">
+        <h2 class="section-title">Traditional Food</h2>
+        <p class="section-intro">Punjabi cuisine is rich, hearty and shared. Wheat, milk, ghee and fresh seasonal vegetables are at its heart.</p>
+        <div class="card-grid">
+
+          <div class="card"><img src="saag.jpg" alt="Sarson da saag with makki di roti"><div class="card-body">
+            <span class="tag">Winter</span><h3>Sarson da Saag and Makki di Roti</h3>
+            <p>Slow-cooked mustard greens served with flatbread of maize flour, white butter and jaggery. It is the most famous winter dish of Punjab.</p></div></div>
+
+          <div class="card"><img src="kulcha.jpg" alt="Amritsari kulcha"><div class="card-body">
+            <span class="tag">Amritsar</span><h3>Amritsari Kulcha</h3>
+            <p>Stuffed bread, usually with potato filling, baked in a tandoor and served with chole, chutney and butter.</p></div></div>
+
+          <div class="card"><img src="chole.jpg" alt="Chole bhature"><div class="card-body">
+            <span class="tag">Street food</span><h3>Chole Bhature</h3>
+            <p>Spiced chickpea curry with fluffy deep-fried bread, a popular breakfast and lunch.</p></div></div>
+
+          <div class="card"><img src="lassi.jpg" alt="Glass of lassi"><div class="card-body">
+            <span class="tag">Drink</span><h3>Lassi</h3>
+            <p>A cooling yogurt drink, served sweet or salted, often topped with a layer of cream.</p></div></div>
+
+          <div class="card"><img src="pinni.jpg" alt="Pinni sweets"><div class="card-body">
+            <span class="tag">Sweet</span><h3>Pinni</h3>
+            <p>A winter sweet made from flour, ghee, sugar or jaggery and dry fruits, made at home in many Punjabi families.</p></div></div>
+
+          <div class="card"><img src="kheer.jpg" alt="Kheer and jalebi"><div class="card-body">
+            <span class="tag">Sweet</span><h3>Kheer and Jalebi</h3>
+            <p>Rice pudding cooked in milk, and crisp, syrup-soaked spirals, both common at weddings and festivals.</p></div></div>
+        </div>
+        <p style="margin-top:20px;"><a href="#top">&uarr; Back to top</a></p>
+      </div>
+    </section>
+
+    <!-- ===================== ARTS AND CRAFTS ===================== -->
+    <section class="alt" id="crafts">
+      <div class="container">
+        <h2 class="section-title">Arts and Crafts</h2>
+        <p class="section-intro">Punjabi crafts are made by hand and often carry bright colours and patterns from village life.</p>
+        <div class="card-grid">
+
+          <div class="card"><img src="phulkari.jpg" alt="Phulkari embroidery"><div class="card-body">
+            <span class="tag">Embroidery</span><h3>Phulkari</h3>
+            <p>The name means "flower work". Bright silk thread is embroidered on plain cloth to make shawls and dupattas, traditionally prepared for family occasions.</p></div></div>
+
+          <div class="card"><img src="jutti.jpg" alt="Punjabi jutti"><div class="card-body">
+            <span class="tag">Footwear</span><h3>Punjabi Jutti</h3>
+            <p>Handmade leather shoes, often decorated with embroidery or thread work. Patiala is especially known for them.</p></div></div>
+
+          <div class="card"><img src="weaving.jpg" alt="Traditional weaving"><div class="card-body">
+            <span class="tag">Weaving</span><h3>Traditional Weaving</h3>
+            <p>Cotton cloth, durries and woven bed cords made on handlooms for household use.</p></div></div>
+
+          <div class="card"><img src="woodwork.jpg" alt="Punjabi woodwork"><div class="card-body">
+            <span class="tag">Woodwork</span><h3>Woodwork</h3>
+            <p>Carved and decorated furniture, such as the pidha (low stool) and painted charpai frames. Hoshiarpur is known for wooden inlay work.</p></div></div>
+
+          <div class="card"><img src="paranda.jpg" alt="Parandi hair tassels"><div class="card-body">
+            <span class="tag">Accessory</span><h3>Parandi</h3>
+            <p>Colourful braided hair tassels worn with traditional dress, especially at festivals and weddings.</p></div></div>
+
+          <div class="card"><img src="tradition.jpg" alt="Traditional Punjabi clothing"><div class="card-body">
+            <span class="tag">Clothing</span><h3>Traditional Clothing</h3>
+            <p>Men wear kurta with pajama or lungi and a turban (pagri). Women wear salwar kameez with dupatta, or the Punjabi suit and ghagra for dance.</p></div></div>
+        </div>
+        <p style="margin-top:20px;"><a href="#top">&uarr; Back to top</a></p>
+      </div>
+    </section>
+
+    <!-- ===================== STORIES AND TRADITIONS ===================== -->
+    <section id="stories">
+      <div class="container">
+        <h2 class="section-title">Stories and Traditions</h2>
+        <p class="section-intro">Folk tales, music and dance carry Punjab's memory from one generation to the next.</p>
+        <div class="card-grid">
+
+          <div class="card"><img src="heerranjha.jpg" alt="Heer Ranjha illustration"><div class="card-body">
+            <span class="tag">Folk romance</span><h3>Heer Ranjha</h3>
+            <p>The love story of Heer and Ranjha is the most famous Punjabi romance. Its best-known telling is the poem by Waris Shah, written in the 18th century.</p></div></div>
+
+          <div class="card"><img src="mirzasahiba.jpg" alt="Mirza Sahiban illustration"><div class="card-body">
+            <span class="tag">Folk romance</span><h3>Mirza Sahiban</h3>
+            <p>A tragic tale of two lovers, retold by several Punjabi poets and still sung by folk singers.</p></div></div>
+
+          <div class="card"><img src="folk.jpg" alt="Folk instruments"><div class="card-body">
+            <span class="tag">Music</span><h3>Folk Music</h3>
+            <p>Punjabi folk music uses instruments such as the dhol, tumbi, algoze and dholki, and songs about love, harvest and daily life.</p></div></div>
+
+          <div class="card"><img src="bhangra.jpg" alt="Bhangra dancers"><div class="card-body">
+            <span class="tag">Dance</span><h3>Bhangra</h3>
+            <p>An energetic dance performed to dhol beats, linked to harvest celebrations, especially Baisakhi. It is now popular around the world.</p></div></div>
+
+          <div class="card"><img src="giddha.jpg" alt="Giddha dancers"><div class="card-body">
+            <span class="tag">Dance</span><h3>Giddha</h3>
+            <p>A women's dance with clapping and short folk verses called boliyan, performed at weddings and festivals such as Teeyan.</p></div></div>
+
+          <div class="card"><img src="langar.jpg" alt="Punjabi wedding customs"><div class="card-body">
+            <span class="tag">Customs</span><h3>Customs and Traditions</h3>
+            <p>Langar (shared meals), respect for elders, and welcoming guests are everyday traditions, along with colourful wedding rituals.</p></div></div>
+        </div>
+
+        <h3 style="margin-top:40px;">Cultural Personalities</h3>
+        <table>
+          <tr><th>Name</th><th>Known for</th></tr>
+          <tr><td>Guru Nanak Dev Ji</td><td>Founder of Sikhism, who taught equality and service</td></tr>
+          <tr><td>Bulleh Shah</td><td>Sufi poet of Punjab</td></tr>
+          <tr><td>Waris Shah</td><td>Author of the epic poem <em>Heer</em></td></tr>
+          <tr><td>Maharaja Ranjit Singh</td><td>Ruler who founded the Sikh Empire in the early 19th century</td></tr>
+          <tr><td>Bhagat Singh</td><td>Freedom fighter</td></tr>
+          <tr><td>Amrita Pritam</td><td>Punjabi poet and novelist</td></tr>
+        </table>
+        <p><a href="#top">&uarr; Back to top</a></p>
+      </div>
+    </section>
+
+    <!-- ===================== ABOUT US ===================== -->
+    <section class="alt" id="about">
+      <div class="container">
+        <h2 class="section-title">About Us</h2>
+
+        <h3>Project Introduction</h3>
+        <p>The Local Cultural Heritage Archive is a first-semester college project made with HTML and CSS. It presents the cultural heritage of Punjab in an easy and attractive way.</p>
+
+        <h3>Objectives</h3>
+        <ul style="margin: 0 0 15px 25px;">
+          <li>Document Punjab's places, festivals, food, crafts and stories.</li>
+          <li>Create awareness about local culture.</li>
+          <li>Make heritage information easy to read for everyone.</li>
+        </ul>
+
+        <h3>Importance of Cultural Preservation</h3>
+        <p>Traditions can be lost if they are not recorded. Preserving them keeps cultural identity alive and helps new generations understand where they come from.</p>
+
+        <div class="card-grid" style="grid-template-columns: repeat(2, 1fr); margin: 20px 0;">
+          <div class="card"><div class="card-body"><h3>Our Vision</h3><p>A future where every community's heritage is documented and easy to find.</p></div></div>
+          <div class="card"><div class="card-body"><h3>Our Mission</h3><p>To collect and share accurate information about Punjab's culture in a simple, attractive format.</p></div></div>
+        </div>
+
+        <h3>Student Team</h3>
+        <!-- Replace these placeholders with your real details -->
+        <table>
+          <tr><th>Name</th><th>Roll Number</th><th>Role</th></tr>
+          <tr><td>Palak </td><td>Roll No.11 </td><td>Content and design</td></tr>
+          <tr><td>Akshita Sharma </td><td>Roll No.13 </td><td>HTML structure</td></tr>
+          <tr><td>Vedansh Prasher</td><td>Roll No.9 </td><td>Research</td></tr>
+        </table>
+
+        <p><strong>Acknowledgement:</strong> This project was developed at Lovely Professional University (LPU). We thank our teachers and the university for their guidance and support.</p>
+
+        <h3 style="margin-top:30px;">Contribute to the Archive</h3>
+        <!-- This form is VISUAL ONLY: no JavaScript or server is connected, so it does not send or save anything. -->
+        <form action="#about" method="get">
+          <label for="name">Your name</label>
+          <input type="text" id="name" placeholder="Enter your name">
+
+          <label for="email">Email</label>
+          <input type="email" id="email" placeholder="Enter your email">
+
+          <label for="category">Category</label>
+          <select id="category">
+            <option>Historical place</option>
+            <option>Festival</option>
+            <option>Food</option>
+            <option>Arts and crafts</option>
+            <option>Story or tradition</option>
+          </select>
+
+          <label for="message">Your contribution</label>
+          <textarea id="message" rows="5" placeholder="Describe the heritage item you would like to add"></textarea>
+
+          <p class="note">Demonstration form only. It does not submit or store information.</p>
+          <p style="margin-top:12px;"><button type="button" class="btn btn-dark" style="border:none; cursor:pointer; font-size:1rem;">Submit (demo)</button></p>
+        </form>
+        <p style="margin-top:20px;"><a href="#top">&uarr; Back to top</a></p>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer>
+    <div class="footer-grid">
+      <div>
+        <h3>Heritage Archive</h3>
+        <p>Preserving the culture of Punjab.</p>
+      </div>
+      <div>
+        <h3>Quick Links</h3>
+        <ul>
+          <li><a href="#heritage">Historical Heritage</a></li>
+          <li><a href="#festivals">Festivals</a></li>
+          <li><a href="#food">Traditional Food</a></li>
+          <li><a href="#crafts">Arts and Crafts</a></li>
+          <li><a href="#stories">Stories and Traditions</a></li>
+          <li><a href="#about">About Us</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Sources</h3>
+        <p>ASI, SGPC, Punjab Tourism, Encyclopaedia Britannica</p>
+        <p><a href="#top">&uarr; Back to top</a></p>
+      </div>
+    </div>
+    <p class="copyright">&copy; 2026 Local Cultural Heritage Archive | Student project, Lovely Professional University</p>
+  </footer>
+</body>
+</html>
